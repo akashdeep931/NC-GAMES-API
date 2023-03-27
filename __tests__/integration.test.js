@@ -9,7 +9,7 @@ beforeEach(() => {
 });
 
 afterAll(() => {
-  if (db.end) db.end();
+  return db.end();
 });
 
 describe("GET /api/categories", () => {
@@ -26,4 +26,35 @@ describe("GET /api/categories", () => {
         });
       });
   });
+  it("404: should return an error when given a wrong path", () => {
+    return request(app)
+      .get("/api/cate4534")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Not Found!");
+      });
+  });
 });
+
+// describe("GET /api/reviews/:reviews_id", () => {
+//   it("200: should return a single object with the corresponding given id and all its keys", () => {
+//     return request(app)
+//       .get("/api/reviews/2")
+//       .expect(200)
+//       .then(({ body }) => {
+//         expect(typeof body).toBe("object");
+
+//         expect(body).toHaveProperty("review_id", expect.any(Number));
+//         expect(body).toHaveProperty("title", expect.any(String));
+//         expect(body).toHaveProperty("category", expect.any(String));
+//         expect(body).toHaveProperty("designer", expect.any(String));
+//         expect(body).toHaveProperty("owner", expect.any(String));
+//         expect(body).toHaveProperty("review_body", expect.any(String));
+//         expect(body).toHaveProperty("review_img_url", expect.any(String));
+//         expect(body).toHaveProperty("created_at", expect.any(String));
+//         expect(body).toHaveProperty("votes", expect.any(Number));
+//       });
+//   });
+// });
