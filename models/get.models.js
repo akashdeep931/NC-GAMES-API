@@ -7,11 +7,20 @@ exports.selectCategories = () => {
   return db.query(selectCategories).then(({ rows }) => rows);
 };
 
-// exports.selectReviewById = (id) => {
-//   const selectReview = `
-//     SELECT * FROM reviews
-//     WHERE review_id = $1
-//     `;
+exports.selectReviewById = (id) => {
+  const selectReview = `
+    SELECT * FROM reviews
+    WHERE review_id = $1
+    `;
 
-//   return db.query(selectReview, [id]).then(({ rows }) => rows[0]);
-// };
+  return db.query(selectReview, [id]).then(({ rows }) => {
+    const review = rows[0];
+    if (!review) {
+      return Promise.reject({
+        status: 404,
+        msg: "Not Found!",
+      });
+    }
+    return review;
+  });
+};
