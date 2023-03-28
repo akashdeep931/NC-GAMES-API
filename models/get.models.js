@@ -14,13 +14,12 @@ exports.selectReviewById = (id) => {
     `;
 
   return db.query(selectReview, [id]).then(({ rows }) => {
-    const review = rows[0];
-    if (!review) {
+    if (rows.length === 0) {
       return Promise.reject({
         status: 404,
         msg: "Not Found!",
       });
     }
-    return review;
+    return rows[0];
   });
 };

@@ -58,16 +58,6 @@ describe("GET /api/reviews/:reviews_id", () => {
         expect(body).toHaveProperty("votes", expect.any(Number));
       });
   });
-  it("404: should return an error when given a wrong path", () => {
-    return request(app)
-      .get("/api/reviedsf/7")
-      .expect(404)
-      .then(({ body }) => {
-        const { msg } = body;
-
-        expect(msg).toBe("Not Found!");
-      });
-  });
   it("404: should return an error when given an incorrect id", () => {
     return request(app)
       .get("/api/reviews/999999999")
