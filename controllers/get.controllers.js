@@ -24,6 +24,6 @@ exports.getReviewsById = (req, res, next) => {
 
 exports.getReviews = (req, res, next) => {
   selectReviews().then((data) => {
-    res.status(200).send(data);
+    res.status(200).send({ reviews: data });
   });
 };

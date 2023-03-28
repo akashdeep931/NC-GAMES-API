@@ -86,9 +86,11 @@ describe("GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toHaveLength(13);
+        const { reviews } = body;
 
-        body.forEach((review) => {
+        expect(reviews).toHaveLength(13);
+
+        reviews.forEach((review) => {
           expect(review).toHaveProperty("owner", expect.any(String));
           expect(review).toHaveProperty("title", expect.any(String));
           expect(review).toHaveProperty("review_id", expect.any(Number));
@@ -106,18 +108,10 @@ describe("GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toHaveLength(13);
+        const { reviews } = body;
 
-        body.forEach(
-          (review) => (review.created_at = new Date(review.created_at))
-        );
-
-        const copiedReviews = [...body];
-        const sortedReviews = copiedReviews.sort(
-          (a, b) => b.created_at - a.created_at
-        );
-
-        expect(body).toEqual(sortedReviews);
+        expect(reviews).toHaveLength(13);
+        expect(reviews).toBeSortedBy("created_at", { descending: true });
       });
   });
 });
