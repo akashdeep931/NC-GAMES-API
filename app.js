@@ -2,6 +2,7 @@ const express = require("express");
 const {
   getCategories,
   getReviewsById,
+  getReviews,
 } = require("./controllers/get.controllers.js");
 const {
   incorrectPathError,
@@ -13,6 +14,7 @@ const app = express();
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:reviews_id", getReviewsById);
+app.get("/api/reviews", getReviews);
 
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);

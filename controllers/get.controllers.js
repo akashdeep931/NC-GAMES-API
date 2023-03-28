@@ -1,6 +1,7 @@
 const {
   selectCategories,
   selectReviewById,
+  selectReviews,
 } = require("../models/get.models.js");
 
 exports.getCategories = (req, res) => {
@@ -19,4 +20,10 @@ exports.getReviewsById = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.getReviews = (req, res, next) => {
+  selectReviews().then((data) => {
+    res.status(200).send(data);
+  });
 };

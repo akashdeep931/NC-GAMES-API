@@ -3,6 +3,7 @@ const app = require("../app.js");
 const testData = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
 const db = require("../db/connection.js");
+const { sort } = require("../db/data/test-data/categories.js");
 
 beforeEach(() => {
   return seed(testData);
@@ -76,6 +77,48 @@ describe("GET /api/reviews/:reviews_id", () => {
         const { msg } = body;
 
         expect(msg).toBe("Bad Request!");
+      });
+  });
+});
+
+describe("GET /api/reviews", () => {
+  it("200: should return an array of objects, each object with the correct keys", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toHaveLength(13);
+
+        body.forEach((review) => {
+          expect(review).toHaveProperty("owner", expect.any(String));
+          expect(review).toHaveProperty("title", expect.any(String));
+          expect(review).toHaveProperty("review_id", expect.any(Number));
+          expect(review).toHaveProperty("category", expect.any(String));
+          expect(review).toHaveProperty("review_img_url", expect.any(String));
+          expect(review).toHaveProperty("created_at", expect.any(String));
+          expect(review).toHaveProperty("votes", expect.any(Number));
+          expect(review).toHaveProperty("designer", expect.any(String));
+          expect(review).toHaveProperty("comment_count", expect.any(String));
+        });
+      });
+  });
+  it("200: should response with a sorted array by date in a descending order", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toHaveLength(13);
+
+        body.forEach(
+          (review) => (review.created_at = new Date(review.created_at))
+        );
+
+        const copiedReviews = [...body];
+        const sortedReviews = copiedReviews.sort(
+          (a, b) => b.created_at - a.created_at
+        );
+
+        expect(body).toEqual(sortedReviews);
       });
   });
 });
