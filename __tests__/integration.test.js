@@ -79,3 +79,39 @@ describe("GET /api/reviews/:reviews_id", () => {
       });
   });
 });
+
+describe("GET /api/reviews", () => {
+  it("200: should return an array of objects, each object with the correct keys", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+
+        expect(reviews).toHaveLength(13);
+
+        reviews.forEach((review) => {
+          expect(review).toHaveProperty("owner", expect.any(String));
+          expect(review).toHaveProperty("title", expect.any(String));
+          expect(review).toHaveProperty("review_id", expect.any(Number));
+          expect(review).toHaveProperty("category", expect.any(String));
+          expect(review).toHaveProperty("review_img_url", expect.any(String));
+          expect(review).toHaveProperty("created_at", expect.any(String));
+          expect(review).toHaveProperty("votes", expect.any(Number));
+          expect(review).toHaveProperty("designer", expect.any(String));
+          expect(review).toHaveProperty("comment_count", expect.any(String));
+        });
+      });
+  });
+  it("200: should response with a sorted array by date in a descending order", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+
+        expect(reviews).toHaveLength(13);
+        expect(reviews).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+});
