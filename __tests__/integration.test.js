@@ -122,9 +122,11 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .get("/api/reviews/2/comments")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toHaveLength(3);
+        const { comments } = body;
 
-        body.forEach((comment) => {
+        expect(comments).toHaveLength(3);
+
+        comments.forEach((comment) => {
           expect(comment).toHaveProperty("comment_id", expect.any(Number));
           expect(comment).toHaveProperty("votes", expect.any(Number));
           expect(comment).toHaveProperty("created_at", expect.any(String));
@@ -139,8 +141,10 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .get("/api/reviews/2/comments")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toHaveLength(3);
-        expect(body).toBeSortedBy("created_at", { descending: true });
+        const { comments } = body;
+
+        expect(comments).toHaveLength(3);
+        expect(comments).toBeSortedBy("created_at", { descending: true });
       });
   });
   it("200: should response with an empty array if given id exists but does not have any comment associated", () => {
@@ -148,7 +152,9 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .get("/api/reviews/4/comments")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toEqual([]);
+        const { comments } = body;
+
+        expect(comments).toEqual([]);
       });
   });
   it("404: should return an error when given an incorrect id", () => {
