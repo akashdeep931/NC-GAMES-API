@@ -115,3 +115,60 @@ describe("GET /api/reviews", () => {
       });
   });
 });
+
+describe("GET /api/reviews/:review_id/comments", () => {
+  it("200: should return an array of objects with the corresponding given id and the correct keys", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toHaveLength(3);
+
+        body.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id", expect.any(Number));
+          expect(comment).toHaveProperty("votes", expect.any(Number));
+          expect(comment).toHaveProperty("created_at", expect.any(String));
+          expect(comment).toHaveProperty("author", expect.any(String));
+          expect(comment).toHaveProperty("body", expect.any(String));
+          expect(comment).toHaveProperty("review_id", expect.any(Number));
+        });
+      });
+  });
+  it("200: should response with a sorted array by date in a descending order", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toHaveLength(3);
+        expect(body).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  it("200: should response with an empty array if given id exists but does not have any comment associated", () => {
+    return request(app)
+      .get("/api/reviews/4/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual([]);
+      });
+  });
+  it("404: should return an error when given an incorrect id", () => {
+    return request(app)
+      .get("/api/reviews/999999999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Not Found!");
+      });
+  });
+  it("400: should return an error when given an id with the incorrect format/data type", () => {
+    return request(app)
+      .get("/api/reviews/helloWorld/comments")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Bad Request!");
+      });
+  });
+});
