@@ -35,7 +35,9 @@ exports.getCommentsById = (req, res, next) => {
 
   Promise.all([selectComentsById(review_id), checkReviewExists(review_id)])
     .then((data) => {
-      res.status(200).send({comments: data[0].length === 0 ? data[1] : data[0]});
+      res
+        .status(200)
+        .send({ comments: data[0].length === 0 ? data[1] : data[0] });
     })
     .catch((err) => {
       next(err);
