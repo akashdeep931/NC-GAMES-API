@@ -186,12 +186,43 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .send({ username: "bainesface", body: "Nice picture!" })
       .expect(201)
       .then(({ body }) => {
-        expect(body).toHaveProperty("comment_id", expect.any(Number));
-        expect(body).toHaveProperty("body", expect.any(String));
-        expect(body).toHaveProperty("review_id", expect.any(Number));
-        expect(body).toHaveProperty("author", expect.any(String));
-        expect(body).toHaveProperty("votes", expect.any(Number));
-        expect(body).toHaveProperty("created_at", expect.any(String));
+        const { comment } = body;
+
+        expect(comment).toHaveProperty("comment_id", expect.any(Number));
+        expect(comment).toHaveProperty("body", expect.any(String));
+        expect(comment).toHaveProperty("review_id", expect.any(Number));
+        expect(comment).toHaveProperty("author", expect.any(String));
+        expect(comment).toHaveProperty("votes", expect.any(Number));
+        expect(comment).toHaveProperty("created_at", expect.any(String));
+
+        expect(comment.review_id).toBe(4);
+        expect(comment.author).toBe("bainesface");
+        expect(comment.body).toBe("Nice picture!");
+      });
+  });
+  it("201: should ignore unnecessary properties passed by the client and focus on just username and body", () => {
+    return request(app)
+      .post("/api/reviews/4/comments")
+      .send({
+        username: "bainesface",
+        body: "Nice picture!",
+        name: "Bains",
+        age: 22,
+      })
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+
+        expect(comment).toHaveProperty("comment_id", expect.any(Number));
+        expect(comment).toHaveProperty("body", expect.any(String));
+        expect(comment).toHaveProperty("review_id", expect.any(Number));
+        expect(comment).toHaveProperty("author", expect.any(String));
+        expect(comment).toHaveProperty("votes", expect.any(Number));
+        expect(comment).toHaveProperty("created_at", expect.any(String));
+
+        expect(comment.review_id).toBe(4);
+        expect(comment.author).toBe("bainesface");
+        expect(comment.body).toBe("Nice picture!");
       });
   });
   it("400: should return an error when given a malformed item/body to insert", () => {
@@ -205,10 +236,32 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(msg).toBe("Bad Request!");
       });
   });
-  it("400: should return an error when given an object with wrong values", () => {
+  it("404: should return an error when given an object with wrong value, specially username", () => {
     return request(app)
       .post("/api/reviews/1/comments")
       .send({ username: "kAKASHi", body: "This should response with an error" })
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Not Found!");
+      });
+  });
+  it("404: should return an error when given an incorrect id", () => {
+    return request(app)
+      .post("/api/reviews/9999999/comments")
+      .send({ username: "bainesface", body: "Nice picture!" })
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Not Found!");
+      });
+  });
+  it("400: should return an error when given an id with the incorrect format/data type", () => {
+    return request(app)
+      .post("/api/reviews/helloWorld/comments")
+      .send({ username: "bainesface", body: "Nice picture!" })
       .expect(400)
       .then(({ body }) => {
         const { msg } = body;
