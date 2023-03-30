@@ -194,7 +194,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body).toHaveProperty("created_at", expect.any(String));
       });
   });
-  it("400: should return an error when given a malfored item/body to insert", () => {
+  it("400: should return an error when given a malformed item/body to insert", () => {
     return request(app)
       .post("/api/reviews/1/comments")
       .send({})
