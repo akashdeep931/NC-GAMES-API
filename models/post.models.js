@@ -23,10 +23,7 @@ exports.checkReviewExists = (id) => {
 };
 
 exports.checkUsernameExists = (newItem) => {
-  if (
-    newItem.hasOwnProperty("username") &&
-    newItem.hasOwnProperty("body")
-  ) {
+  if (newItem.hasOwnProperty("username") && newItem.hasOwnProperty("body")) {
     const { username } = newItem;
 
     return db
