@@ -8,7 +8,7 @@ exports.deleteComments = (req, res, next) => {
 
   Promise.all([checkCommentExists(comment_id), deleteComment(comment_id)])
     .then((data) => {
-      res.status(204).send(data[0]);
+      res.status(204).send(data[1]);
     })
     .catch((err) => {
       next(err);
