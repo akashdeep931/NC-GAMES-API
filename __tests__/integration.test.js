@@ -214,12 +214,8 @@ describe("POST /api/reviews/:review_id/comments", () => {
         const { comment } = body;
 
         expect(comment).toHaveProperty("comment_id", expect.any(Number));
-        expect(comment).toHaveProperty("body", expect.any(String));
-        expect(comment).toHaveProperty("review_id", expect.any(Number));
-        expect(comment).toHaveProperty("author", expect.any(String));
         expect(comment).toHaveProperty("votes", expect.any(Number));
         expect(comment).toHaveProperty("created_at", expect.any(String));
-
         expect(comment.review_id).toBe(4);
         expect(comment.author).toBe("bainesface");
         expect(comment.body).toBe("Nice picture!");
