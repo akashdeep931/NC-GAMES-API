@@ -178,3 +178,42 @@ describe("GET /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/reviews/:review_id/comments", () => {
+  it("201: should create and response with the new item inserted by the user", () => {
+    return request(app)
+      .post("/api/reviews/4/comments")
+      .send({ username: "bainesface", body: "Nice picture!" })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("comment_id", expect.any(Number));
+        expect(body).toHaveProperty("body", expect.any(String));
+        expect(body).toHaveProperty("review_id", expect.any(Number));
+        expect(body).toHaveProperty("author", expect.any(String));
+        expect(body).toHaveProperty("votes", expect.any(Number));
+        expect(body).toHaveProperty("created_at", expect.any(String));
+      });
+  });
+  it("400: should return an error when given a malfored item/body to insert", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Bad Request!");
+      });
+  });
+  it("400: should return an error when given an object with wrong values", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "kAKASHi", body: "This should response with an error" })
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Bad Request!");
+      });
+  });
+});
