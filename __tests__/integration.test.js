@@ -266,3 +266,88 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe("PATCH /api/reviews/:review_id", () => {
+  it("200: should update and response with the updated item changed by the user", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ inc_votes: 5 })
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+
+        expect(review).toHaveProperty("review_id", expect.any(Number));
+        expect(review).toHaveProperty("title", expect.any(String));
+        expect(review).toHaveProperty("category", expect.any(String));
+        expect(review).toHaveProperty("designer", expect.any(String));
+        expect(review).toHaveProperty("owner", expect.any(String));
+        expect(review).toHaveProperty("review_body", expect.any(String));
+        expect(review).toHaveProperty("review_img_url", expect.any(String));
+        expect(review).toHaveProperty("created_at", expect.any(String));
+        expect(review.votes).toBe(10);
+      });
+  });
+  it("200: should update and response with the updated item changed by the user, when given a negative number", () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({ inc_votes: -100 })
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+
+        expect(review).toHaveProperty("review_id", expect.any(Number));
+        expect(review).toHaveProperty("title", expect.any(String));
+        expect(review).toHaveProperty("category", expect.any(String));
+        expect(review).toHaveProperty("designer", expect.any(String));
+        expect(review).toHaveProperty("owner", expect.any(String));
+        expect(review).toHaveProperty("review_body", expect.any(String));
+        expect(review).toHaveProperty("review_img_url", expect.any(String));
+        expect(review).toHaveProperty("created_at", expect.any(String));
+        expect(review.votes).toBe(-99);
+      });
+  });
+  it("404: should return an error when given an incorrect id", () => {
+    return request(app)
+      .patch("/api/reviews/9999999")
+      .send({ inc_votes: 10 })
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Not Found!");
+      });
+  });
+  it("400: should return an error when given an id with the incorrect format/data type", () => {
+    return request(app)
+      .patch("/api/reviews/helloWorld")
+      .send({ inc_votes: 10 })
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Bad Request!");
+      });
+  });
+  it("400: should return an error when given a malformed item/body to insert", () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({ name: 200 })
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Bad Request!");
+      });
+  });
+  it("400: should return an error when given a wrong value type", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ inc_votes: "gg" })
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Bad Request!");
+      });
+  });
+});
