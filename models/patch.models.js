@@ -24,11 +24,11 @@ exports.checkReviewExists = (id) => {
 exports.updateReviews = (id, changedItem) => {
   const { inc_votes: newVote } = changedItem;
   const updateVotes = `
-    UPDATE reviews
-    SET votes = votes + $1
-    WHERE review_id = $2
-    RETURNING *
-    `;
+      UPDATE reviews
+      SET votes = votes + $1
+      WHERE review_id = $2
+      RETURNING *
+      `;
 
   return db.query(updateVotes, [newVote, id]).then(({ rows }) => {
     return rows[0];
