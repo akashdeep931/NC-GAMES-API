@@ -331,7 +331,7 @@ describe("PATCH /api/reviews/:review_id", () => {
   it("400: should return an error when given a malformed item/body to insert", () => {
     return request(app)
       .patch("/api/reviews/1")
-      .send({name: "gg"})
+      .send({ name: 200 })
       .expect(400)
       .then(({ body }) => {
         const { msg } = body;
@@ -343,6 +343,32 @@ describe("PATCH /api/reviews/:review_id", () => {
     return request(app)
       .patch("/api/reviews/2")
       .send({ inc_votes: "gg" })
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Bad Request!");
+      });
+  });
+});
+
+describe("DELETE /api/comments/:comment_id", () => {
+  it("204: should delete the comment provided by the client and response with no content", () => {
+    return request(app).delete("/api/comments/5").expect(204);
+  });
+  it("404: should return an error when given an incorrect id", () => {
+    return request(app)
+      .delete("/api/comments/99999")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Not Found!");
+      });
+  });
+  it("400: should return an error when given an id with the incorrect format/data type", () => {
+    return request(app)
+      .delete("/api/comments/helloWorld")
       .expect(400)
       .then(({ body }) => {
         const { msg } = body;
