@@ -127,7 +127,7 @@ describe("GET /api/reviews", () => {
           expect(review).toHaveProperty("owner", expect.any(String));
           expect(review).toHaveProperty("title", expect.any(String));
           expect(review).toHaveProperty("review_id", expect.any(Number));
-          expect(review).toHaveProperty("category", expect.any(String));
+          expect(review.category).toBe("dexterity");
           expect(review).toHaveProperty("review_img_url", expect.any(String));
           expect(review).toHaveProperty("created_at", expect.any(String));
           expect(review).toHaveProperty("votes", expect.any(Number));
@@ -136,14 +136,14 @@ describe("GET /api/reviews", () => {
         });
       });
   });
-  it("400: should return an error when given an incorrect query", () => {
+  it("404: should return an error when given an incorrect category query", () => {
     return request(app)
       .get("/api/reviews?category=solojhv")
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
         const { msg } = body;
 
-        expect(msg).toBe("Bad Request!");
+        expect(msg).toBe("Not Found!");
       });
   });
   it("200: should be able to accept a sort_by and order query and give response with the correct data", () => {
@@ -157,9 +157,19 @@ describe("GET /api/reviews", () => {
         expect(reviews).toBeSortedBy("owner", { descending: false });
       });
   });
-  it("400: should return an error when given incorrect queries", () => {
+  it("400: should return an error when given an incorrect sort_by query", () => {
     return request(app)
-      .get("/api/reviews?sort_by=names&order=first")
+      .get("/api/reviews?sort_by=names")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Bad Request!");
+      });
+  });
+  it("400: should return an error when given an incorrect order query", () => {
+    return request(app)
+      .get("/api/reviews?order=first")
       .expect(400)
       .then(({ body }) => {
         const { msg } = body;

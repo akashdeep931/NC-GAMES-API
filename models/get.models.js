@@ -56,8 +56,8 @@ exports.checkCategoryExists = (categ) => {
       .then(({ rows }) => {
         if (rows.length === 0) {
           return Promise.reject({
-            status: 400,
-            msg: "Bad Request!",
+            status: 404,
+            msg: "Not Found!",
           });
         }
 
