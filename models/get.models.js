@@ -1,4 +1,6 @@
 const db = require("../db/connection.js");
+const { readFile } = require("fs/promises");
+
 
 exports.selectCategories = () => {
   const selectCategories = `SELECT * FROM categories`;
@@ -8,8 +10,10 @@ exports.selectCategories = () => {
 
 exports.selectReviewById = (id) => {
   const selectReview = `
-    SELECT * FROM reviews
-    WHERE review_id = $1
+  SELECT owner, title, reviews.review_id, category, review_img_url, reviews.created_at, reviews.votes, review_body, designer, COUNT(body) AS comment_count FROM reviews
+  LEFT JOIN comments ON comments.review_id = reviews.review_id
+  WHERE reviews.review_id = $1
+  GROUP BY reviews.review_id
     `;
 
   return db.query(selectReview, [id]).then(({ rows }) => {
@@ -107,4 +111,8 @@ exports.selectUsers = () => {
   `
     )
     .then(({ rows }) => rows);
+};
+
+exports.fetchAPIs = () => {
+  return readFile(`${__dirname}/../endpoints.json`, "utf-8");
 };

@@ -3,6 +3,7 @@ const app = require("../app.js");
 const testData = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
 const db = require("../db/connection.js");
+const endpointsJson = require("../endpoints.json");
 
 beforeEach(() => {
   return seed(testData);
@@ -44,18 +45,29 @@ describe("GET /api/reviews/:reviews_id", () => {
       .get("/api/reviews/2")
       .expect(200)
       .then(({ body }) => {
-        expect(typeof body).toBe("object");
-        expect(Array.isArray(body)).toBe(false);
+        const { review } = body;
+        expect(typeof review).toBe("object");
+        expect(Array.isArray(review)).toBe(false);
 
-        expect(body).toHaveProperty("review_id", expect.any(Number));
-        expect(body).toHaveProperty("title", expect.any(String));
-        expect(body).toHaveProperty("category", expect.any(String));
-        expect(body).toHaveProperty("designer", expect.any(String));
-        expect(body).toHaveProperty("owner", expect.any(String));
-        expect(body).toHaveProperty("review_body", expect.any(String));
-        expect(body).toHaveProperty("review_img_url", expect.any(String));
-        expect(body).toHaveProperty("created_at", expect.any(String));
-        expect(body).toHaveProperty("votes", expect.any(Number));
+        expect(review).toHaveProperty("review_id", expect.any(Number));
+        expect(review).toHaveProperty("title", expect.any(String));
+        expect(review).toHaveProperty("category", expect.any(String));
+        expect(review).toHaveProperty("designer", expect.any(String));
+        expect(review).toHaveProperty("owner", expect.any(String));
+        expect(review).toHaveProperty("review_body", expect.any(String));
+        expect(review).toHaveProperty("review_img_url", expect.any(String));
+        expect(review).toHaveProperty("created_at", expect.any(String));
+        expect(review).toHaveProperty("votes", expect.any(Number));
+      });
+  });
+  it("200: should also have a comment_count property that gives the total comments for the requested review", () => {
+    return request(app)
+      .get("/api/reviews/2")
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+
+        expect(review.comment_count).toBe("3");
       });
   });
   it("404: should return an error when given an incorrect id", () => {
@@ -466,6 +478,20 @@ describe("GET /api/users", () => {
           expect(user).toHaveProperty("name", expect.any(String));
           expect(user).toHaveProperty("avatar_url", expect.any(String));
         });
+      });
+  });
+});
+
+describe("GET /api", () => {
+  it("200: should return JSON string with all the endpoints details", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        const { endpoints } = body;
+        const parsedEndpoints = JSON.parse(endpoints);
+
+        expect(parsedEndpoints).toEqual(endpointsJson);
       });
   });
 });

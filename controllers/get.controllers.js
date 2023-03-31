@@ -6,6 +6,7 @@ const {
   checkReviewExists,
   selectUsers,
   checkCategoryExists,
+  fetchAPIs,
 } = require("../models/get.models.js");
 
 exports.getCategories = (req, res) => {
@@ -19,7 +20,7 @@ exports.getReviewsById = (req, res, next) => {
 
   selectReviewById(reviews_id)
     .then((data) => {
-      res.status(200).send(data);
+      res.status(200).send({ review: data });
     })
     .catch((err) => {
       next(err);
@@ -60,5 +61,11 @@ exports.getCommentsById = (req, res, next) => {
 exports.getUsers = (req, res) => {
   selectUsers().then((data) => {
     res.status(200).send({ users: data });
+  });
+};
+
+exports.getAllAPIs = (req, res) => {
+  fetchAPIs().then((data) => {
+    res.status(200).send({ endpoints: data });
   });
 };
