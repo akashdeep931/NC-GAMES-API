@@ -48,8 +48,8 @@ exports.checkCategoryExists = (categ) => {
     return db
       .query(
         `
-    SELECT * FROM reviews
-    WHERE category = $1
+    SELECT * FROM categories
+    WHERE slug = $1
     `,
         [categ]
       )
@@ -61,7 +61,7 @@ exports.checkCategoryExists = (categ) => {
           });
         }
 
-        return rows;
+        return [];
       });
   }
 };

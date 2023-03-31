@@ -30,11 +30,13 @@ exports.getReviews = (req, res, next) => {
   const { category, sort_by, order } = req.query;
 
   Promise.all([
-    checkCategoryExists(category),
     selectReviews(category, sort_by, order),
+    checkCategoryExists(category),
   ])
     .then((data) => {
-      res.status(200).send({ reviews: data[1] });
+      res
+        .status(200)
+        .send({ reviews: data[0].length === 0 ? data[1] : data[0] });
     })
     .catch((err) => {
       next(err);

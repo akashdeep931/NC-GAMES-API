@@ -136,6 +136,16 @@ describe("GET /api/reviews", () => {
         });
       });
   });
+  // it("200: should return an empty array when the given category exists but no article is associated", () => {
+  //   return request(app)
+  //     .get("/api/reviews?category=children%27s%20games")
+  //     .expect(200)
+  //     .then(({ body }) => {
+  //       const { review } = body;
+
+  //       expect(review).toEqual([]);
+  //     });
+  // });
   it("404: should return an error when given an incorrect category query", () => {
     return request(app)
       .get("/api/reviews?category=solojhv")
