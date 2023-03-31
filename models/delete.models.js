@@ -30,7 +30,7 @@ exports.deleteComment = (id) => {
     `,
       [id]
     )
-    .then((response) => {
-      return response.rows;
+    .then(({ rows }) => {
+      return rows;
     });
 };

@@ -354,12 +354,7 @@ describe("PATCH /api/reviews/:review_id", () => {
 
 describe("DELETE /api/comments/:comment_id", () => {
   it("204: should delete the comment provided by the client and response with no content", () => {
-    return request(app)
-      .delete("/api/comments/5")
-      .expect(204)
-      .then(({ body }) => {
-        expect(body).toEqual({});
-      });
+    return request(app).delete("/api/comments/5").expect(204);
   });
   it("404: should return an error when given an incorrect id", () => {
     return request(app)
