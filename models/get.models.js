@@ -23,15 +23,47 @@ exports.selectReviewById = (id) => {
   });
 };
 
-exports.selectReviews = () => {
-  const reviewQuery = `
+exports.selectReviews = (categ, sort, order) => {
+  const sort_by = sort || "created_at";
+  const ordered = order || "DESC";
+
+  let reviewQuery = `
     SELECT owner, title, reviews.review_id, category, review_img_url, reviews.created_at, reviews.votes, designer, COUNT(body) AS comment_count FROM reviews
     LEFT JOIN comments ON comments.review_id = reviews.review_id
-    GROUP BY reviews.review_id
-    ORDER BY reviews.created_at DESC
     `;
+  const category = [];
 
-  return db.query(reviewQuery).then((response) => response.rows);
+  if (categ) {
+    reviewQuery += ` WHERE category = $1`;
+    category.push(categ);
+  }
+
+  reviewQuery += ` GROUP BY reviews.review_id ORDER BY reviews.${sort_by} ${ordered}`;
+
+  return db.query(reviewQuery, category).then((response) => response.rows);
+};
+
+exports.checkCategoryExists = (categ) => {
+  if (categ) {
+    return db
+      .query(
+        `
+    SELECT * FROM categories
+    WHERE slug = $1
+    `,
+        [categ]
+      )
+      .then(({ rows }) => {
+        if (rows.length === 0) {
+          return Promise.reject({
+            status: 404,
+            msg: "Not Found!",
+          });
+        }
+
+        return [];
+      });
+  }
 };
 
 exports.selectComentsById = (id) => {
