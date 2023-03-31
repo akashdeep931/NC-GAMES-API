@@ -471,3 +471,49 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe("GET /api", () => {
+  it("200: should return JSON string with all the endpoints details", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        const { endpoints } = body;
+        const parsedEndpoints = JSON.parse(endpoints);
+
+        expect(parsedEndpoints).toHaveProperty("GET /api", expect.any(Object));
+        expect(parsedEndpoints).toHaveProperty(
+          "GET /api/categories",
+          expect.any(Object)
+        );
+        expect(parsedEndpoints).toHaveProperty(
+          "GET /api/reviews",
+          expect.any(Object)
+        );
+        expect(parsedEndpoints).toHaveProperty(
+          "GET /api/reviews/:reviews_id",
+          expect.any(Object)
+        );
+        expect(parsedEndpoints).toHaveProperty(
+          "GET /api/reviews/:review_id/comments",
+          expect.any(Object)
+        );
+        expect(parsedEndpoints).toHaveProperty(
+          "GET /api/users",
+          expect.any(Object)
+        );
+        expect(parsedEndpoints).toHaveProperty(
+          "POST /api/reviews/:review_id/comments",
+          expect.any(Object)
+        );
+        expect(parsedEndpoints).toHaveProperty(
+          "PATCH /api/reviews/:review_id",
+          expect.any(Object)
+        );
+        expect(parsedEndpoints).toHaveProperty(
+          "DELETE /api/comments/:comment_id",
+          expect.any(Object)
+        );
+      });
+  });
+});

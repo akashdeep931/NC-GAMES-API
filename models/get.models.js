@@ -1,4 +1,6 @@
 const db = require("../db/connection.js");
+const { readFile } = require("fs/promises");
+
 
 exports.selectCategories = () => {
   const selectCategories = `SELECT * FROM categories`;
@@ -109,4 +111,8 @@ exports.selectUsers = () => {
   `
     )
     .then(({ rows }) => rows);
+};
+
+exports.fetchAPIs = () => {
+  return readFile(`${__dirname}/../endpoints.json`, "utf-8");
 };
