@@ -5,6 +5,7 @@ const {
   selectComentsById,
   checkReviewExists,
   selectUsers,
+  checkCategoryExists,
 } = require("../models/get.models.js");
 
 exports.getCategories = (req, res) => {
@@ -25,10 +26,19 @@ exports.getReviewsById = (req, res, next) => {
     });
 };
 
-exports.getReviews = (req, res) => {
-  selectReviews().then((data) => {
-    res.status(200).send({ reviews: data });
-  });
+exports.getReviews = (req, res, next) => {
+  const { category, sort_by, order } = req.query;
+
+  Promise.all([
+    checkCategoryExists(category),
+    selectReviews(category, sort_by, order),
+  ])
+    .then((data) => {
+      res.status(200).send({ reviews: data[1] });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.getCommentsById = (req, res, next) => {

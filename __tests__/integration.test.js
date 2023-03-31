@@ -114,6 +114,59 @@ describe("GET /api/reviews", () => {
         expect(reviews).toBeSortedBy("created_at", { descending: true });
       });
   });
+  it("200: should be able to accept a category query and give response with the correct data", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+
+        expect(reviews).toHaveLength(1);
+
+        reviews.forEach((review) => {
+          expect(review).toHaveProperty("owner", expect.any(String));
+          expect(review).toHaveProperty("title", expect.any(String));
+          expect(review).toHaveProperty("review_id", expect.any(Number));
+          expect(review).toHaveProperty("category", expect.any(String));
+          expect(review).toHaveProperty("review_img_url", expect.any(String));
+          expect(review).toHaveProperty("created_at", expect.any(String));
+          expect(review).toHaveProperty("votes", expect.any(Number));
+          expect(review).toHaveProperty("designer", expect.any(String));
+          expect(review).toHaveProperty("comment_count", expect.any(String));
+        });
+      });
+  });
+  it("400: should return an error when given an incorrect query", () => {
+    return request(app)
+      .get("/api/reviews?category=solojhv")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Bad Request!");
+      });
+  });
+  it("200: should be able to accept a sort_by and order query and give response with the correct data", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=owner&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+
+        expect(reviews).toHaveLength(13);
+        expect(reviews).toBeSortedBy("owner", { descending: false });
+      });
+  });
+  it("400: should return an error when given incorrect queries", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=names&order=first")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Bad Request!");
+      });
+  });
 });
 
 describe("GET /api/reviews/:review_id/comments", () => {
