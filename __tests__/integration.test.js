@@ -44,18 +44,20 @@ describe("GET /api/reviews/:reviews_id", () => {
       .get("/api/reviews/2")
       .expect(200)
       .then(({ body }) => {
-        expect(typeof body).toBe("object");
-        expect(Array.isArray(body)).toBe(false);
+        const { review } = body;
+        expect(typeof review).toBe("object");
+        expect(Array.isArray(review)).toBe(false);
 
-        expect(body).toHaveProperty("review_id", expect.any(Number));
-        expect(body).toHaveProperty("title", expect.any(String));
-        expect(body).toHaveProperty("category", expect.any(String));
-        expect(body).toHaveProperty("designer", expect.any(String));
-        expect(body).toHaveProperty("owner", expect.any(String));
-        expect(body).toHaveProperty("review_body", expect.any(String));
-        expect(body).toHaveProperty("review_img_url", expect.any(String));
-        expect(body).toHaveProperty("created_at", expect.any(String));
-        expect(body).toHaveProperty("votes", expect.any(Number));
+        expect(review).toHaveProperty("review_id", expect.any(Number));
+        expect(review).toHaveProperty("title", expect.any(String));
+        expect(review).toHaveProperty("category", expect.any(String));
+        expect(review).toHaveProperty("designer", expect.any(String));
+        expect(review).toHaveProperty("owner", expect.any(String));
+        expect(review).toHaveProperty("review_body", expect.any(String));
+        expect(review).toHaveProperty("review_img_url", expect.any(String));
+        expect(review).toHaveProperty("created_at", expect.any(String));
+        expect(review).toHaveProperty("votes", expect.any(Number));
+        expect(review).toHaveProperty("comment_count", expect.any(String));
       });
   });
   it("404: should return an error when given an incorrect id", () => {

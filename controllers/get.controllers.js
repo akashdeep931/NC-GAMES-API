@@ -19,7 +19,7 @@ exports.getReviewsById = (req, res, next) => {
 
   selectReviewById(reviews_id)
     .then((data) => {
-      res.status(200).send(data);
+      res.status(200).send({ review: data });
     })
     .catch((err) => {
       next(err);
