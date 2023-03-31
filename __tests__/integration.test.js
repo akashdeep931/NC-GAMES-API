@@ -3,6 +3,7 @@ const app = require("../app.js");
 const testData = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
 const db = require("../db/connection.js");
+const endpointsJson = require("../endpoints.json");
 
 beforeEach(() => {
   return seed(testData);
@@ -57,7 +58,16 @@ describe("GET /api/reviews/:reviews_id", () => {
         expect(review).toHaveProperty("review_img_url", expect.any(String));
         expect(review).toHaveProperty("created_at", expect.any(String));
         expect(review).toHaveProperty("votes", expect.any(Number));
-        expect(review).toHaveProperty("comment_count", expect.any(String));
+      });
+  });
+  it("200: should also have a comment_count property that gives the total comments for the requested review", () => {
+    return request(app)
+      .get("/api/reviews/2")
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+
+        expect(review.comment_count).toBe("3");
       });
   });
   it("404: should return an error when given an incorrect id", () => {
@@ -481,39 +491,7 @@ describe("GET /api", () => {
         const { endpoints } = body;
         const parsedEndpoints = JSON.parse(endpoints);
 
-        expect(parsedEndpoints).toHaveProperty("GET /api", expect.any(Object));
-        expect(parsedEndpoints).toHaveProperty(
-          "GET /api/categories",
-          expect.any(Object)
-        );
-        expect(parsedEndpoints).toHaveProperty(
-          "GET /api/reviews",
-          expect.any(Object)
-        );
-        expect(parsedEndpoints).toHaveProperty(
-          "GET /api/reviews/:reviews_id",
-          expect.any(Object)
-        );
-        expect(parsedEndpoints).toHaveProperty(
-          "GET /api/reviews/:review_id/comments",
-          expect.any(Object)
-        );
-        expect(parsedEndpoints).toHaveProperty(
-          "GET /api/users",
-          expect.any(Object)
-        );
-        expect(parsedEndpoints).toHaveProperty(
-          "POST /api/reviews/:review_id/comments",
-          expect.any(Object)
-        );
-        expect(parsedEndpoints).toHaveProperty(
-          "PATCH /api/reviews/:review_id",
-          expect.any(Object)
-        );
-        expect(parsedEndpoints).toHaveProperty(
-          "DELETE /api/comments/:comment_id",
-          expect.any(Object)
-        );
+        expect(parsedEndpoints).toEqual(endpointsJson);
       });
   });
 });
