@@ -66,3 +66,13 @@ exports.checkReviewExists = (id) => {
       return [];
     });
 };
+
+exports.selectUsers = () => {
+  return db
+    .query(
+      `
+  SELECT * FROM users
+  `
+    )
+    .then(({ rows }) => rows);
+};

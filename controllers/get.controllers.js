@@ -4,6 +4,7 @@ const {
   selectReviews,
   selectComentsById,
   checkReviewExists,
+  selectUsers,
 } = require("../models/get.models.js");
 
 exports.getCategories = (req, res) => {
@@ -42,4 +43,10 @@ exports.getCommentsById = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.getUsers = (req, res) => {
+  selectUsers().then((data) => {
+    res.status(200).send({ users: data });
+  });
 };
