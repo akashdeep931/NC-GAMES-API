@@ -331,7 +331,7 @@ describe("PATCH /api/reviews/:review_id", () => {
   it("400: should return an error when given a malformed item/body to insert", () => {
     return request(app)
       .patch("/api/reviews/1")
-      .send({ name: "gg" })
+      .send({ name: 200 })
       .expect(400)
       .then(({ body }) => {
         const { msg } = body;
