@@ -66,6 +66,8 @@ exports.getUsers = (req, res) => {
 
 exports.getAllAPIs = (req, res) => {
   fetchAPIs().then((data) => {
-    res.status(200).send({ endpoints: data });
+    const parsedData = JSON.parse(data);
+
+    res.status(200).send({ endpoints: parsedData });
   });
 };

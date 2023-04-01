@@ -489,9 +489,8 @@ describe("GET /api", () => {
       .expect(200)
       .then(({ body }) => {
         const { endpoints } = body;
-        const parsedEndpoints = JSON.parse(endpoints);
 
-        expect(parsedEndpoints).toEqual(endpointsJson);
+        expect(endpoints).toEqual(endpointsJson);
       });
   });
 });
