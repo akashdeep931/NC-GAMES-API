@@ -4,7 +4,7 @@
 
 This is an API built for the purpose of accessing application data programmatically.
 Here you can access the api server: https://nc-games-api-39ip.onrender.com/api
-You can see then endpoints you can access utilising different HTTP methods and what you will get as a response.
+You can see then the endpoints you can access utilising different HTTP methods and what you will get as a response.
 
 ## Instructions for running the program locally:
 
